@@ -1,0 +1,151 @@
+/* Genel stil */
+body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(135deg, #333333, #000000); /* Gri-siyah geçişi tüm sayfa için */
+  color: #FFFFFF;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* Başlık ve header */
+.header {
+  background: linear-gradient(135deg, #333333, #000000); /* Başlık için gri-siyah geçişi */
+  padding: 20px;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Hoşgeldiniz yazısı */
+.welcome-text {
+  font-size: 24px;
+  color: #f0e68c; /* Altın sarısı renk */
+  margin-top: 50px;
+  font-weight: bold;
+}
+
+/* Buton stil */
+.custom-button {
+  background-color: #333333;  /* Buton rengi */
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #555555;  /* Buton hover rengi */
+}
+
+.custom-button:active {
+  background-color: #222222;  /* Buton tıklama rengi */
+}
+
+/* Form elemanları */
+input, select {
+  padding: 10px;
+  font-size: 16px;
+  margin: 10px;
+  width: 250px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+/* Otopark seçim ekranı */
+.parking-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.parking-spot {
+  padding: 10px;
+  margin: 10px;
+  background-color: #333;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+  width: 80px;
+}
+
+.parking-spot.boş {
+  background-color: green;
+}
+
+.parking-spot.dolu {
+  background-color: red;
+}
+
+.parking-spot.rezervasyon {
+  background-color: orange;
+}
+
+.parking-spot:hover {
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+/* Otopark kartları için stil */
+.parking-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.parking-spot {
+  padding: 20px;
+  margin: 10px;
+  background-color: #333;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+  width: 80px;
+}
+
+.parking-spot.boş {
+  background-color: green;
+}
+
+.parking-spot.dolu {
+  background-color: red;
+}
+
+.parking-spot.rezervasyon {
+  background-color: orange;
+}
+
+.parking-spot:hover {
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+/* Diğer stil ayarları */
+.custom-button {
+  background-color: #333333;
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #555555;
+}
+
+.custom-button:active {
+  background-color: #222222;
+}
