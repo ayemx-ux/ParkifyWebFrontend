@@ -9,9 +9,7 @@ import AdminDashboard from "./AdminDashboard";
 import HomePage from "./HomePage";
 import ParkingSelection from "./ParkingSelection";
 import ParkingView from "./ParkingView";
-import DailyData from "./DailyData";
-import WeeklyData from "./WeeklyData";
-import MonthlyData from "./MonthlyData";
+import Data from "./Data";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -41,9 +39,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/parking-view" element={<ParkingView userType={isLoggedIn ? "admin" : "guest"} />} />
-            <Route path="/daily-data" element={<DailyData />} />
-            <Route path="/weekly-data" element={<WeeklyData />} />
-            <Route path="/monthly-data" element={<MonthlyData />} />
+            <Route path="/data" element={<Data />} />
           </Routes>
         </div>
       </Router>
