@@ -7,19 +7,35 @@ function AdminPage({ setIsLoggedIn }) {
   const navigate = useNavigate(); // React Router kullanarak yönlendirme
 
   // Giriş formu gönderildiğinde çalışacak fonksiyon
-  const handleSubmit = (e) => {
-    e.preventDefault();  // Formun sayfayı yenilemesini engeller
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Formun sayfayı yenilemesini engeller
 
-    console.log("Admin giriş formu gönderildi!");  // Form gönderildiğini kontrol et
+    try {
+      const response = await fetch("https://localhost:5001/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: username,
+          password: password
+        })
+      });
 
-    // Basit bir doğrulama (örneğin, sabit bir yönetici kullanıcı adı ve şifre)
-    if (username === "admin" && password === "admin123") {
-      // Başarıyla giriş yaptıysa kullanıcıyı dashboard sayfasına yönlendir
-      alert("Yönetici girişi başarılı!");
-      setIsLoggedIn(true); // Giriş yapıldığında butonları gizlemek için state güncelliyoruz
-      navigate("/admin-dashboard"); // Yönetici için özel dashboard sayfasına yönlendir
-    } else {
-      alert("Yönetici kullanıcı adı veya şifre yanlış.");
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("lotId", data.lot_id); // Oturum için lotId'yi sakla
+        alert(`Hoş geldiniz, ${data.name}!`);
+        setIsLoggedIn(true); // Giriş yapıldığında butonları gizlemek için state güncellenir
+        navigate("/admin-dashboard"); // Yönetici için özel dashboard sayfasına yönlendir
+      } else if (response.status === 401) {
+        alert("Giriş başarısız: Hatalı kullanıcı adı veya şifre.");
+      } else {
+        alert("Bir hata oluştu.");
+      }
+    } catch (error) {
+      console.error("Hata:", error);
+      alert("Sunucuya bağlanılamadı.");
     }
   };
 
@@ -29,13 +45,13 @@ function AdminPage({ setIsLoggedIn }) {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Yönetici Kullanıcı Adı"
+          placeholder="Yönetici E-Posta"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={{
             padding: "10px",
             marginBottom: "10px",
-            width: "200px",
+            width: "200px"
           }}
         />
         <br />
@@ -47,7 +63,7 @@ function AdminPage({ setIsLoggedIn }) {
           style={{
             padding: "10px",
             marginBottom: "20px",
-            width: "200px",
+            width: "200px"
           }}
         />
         <br />

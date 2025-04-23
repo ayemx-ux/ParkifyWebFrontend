@@ -1,44 +1,22 @@
-import React, { useState } from "react"; // useState ve React'i import ediyoruz
-import { useNavigate } from "react-router-dom"; // useNavigate'i import ediyoruz
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function ParkingSelection() {
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
-  const [selectedParking, setSelectedParking] = useState(null);
-  const navigate = useNavigate(); // navigate'i tanımlıyoruz
+  const navigate = useNavigate();
 
-  // Otopark verileri (şu an statik)
-  const parkingData = {
-    Istanbul: {
-      Kadikoy: [
-        { id: "A1", status: "Dolu" },
-        { id: "A2", status: "Boş" },
-        { id: "A3", status: "Rezervasyon" },
-      ],
-      Besiktas: [
-        { id: "B1", status: "Boş" },
-        { id: "B2", status: "Dolu" },
-        { id: "B3", status: "Rezervasyon" },
-      ],
-    },
-    Ankara: {
-      Cankaya: [
-        { id: "C1", status: "Boş" },
-        { id: "C2", status: "Dolu" },
-      ],
-      Mamak: [
-        { id: "D1", status: "Rezervasyon" },
-        { id: "D2", status: "Boş" },
-      ],
-    },
-  };
-
-  // Otoparkları göstermek için handleSubmit fonksiyonu
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (city && district) {
-      setSelectedParking(parkingData[city][district]);
-      navigate("/parking-view"); // Bu satırla yönlendirme yapılır
+      if (city === "Ankara" && district === "Başkent Üniversitesi") {
+        localStorage.setItem("lotId", "1"); // Başkent için gerçek veri
+      } else {
+        localStorage.removeItem("lotId"); // Diğer ilçeler için sahte veri
+      }
+
+      navigate("/parking-view"); // Her durumda aynı sayfaya yönlendirilir
     } else {
       alert("Lütfen il ve ilçe seçin.");
     }
@@ -82,13 +60,14 @@ function ParkingSelection() {
           <option value="">Bir ilçe seçin</option>
           {city === "Istanbul" && (
             <>
-              <option value="Kadikoy">Kadıköy</option>
-              <option value="Besiktas">Beşiktaş</option>
+              <option value="Kadıköy">Kadıköy</option>
+              <option value="Beşiktaş">Beşiktaş</option>
             </>
           )}
           {city === "Ankara" && (
             <>
-              <option value="Cankaya">Çankaya</option>
+              <option value="Başkent Üniversitesi">Başkent Üniversitesi</option>
+              <option value="Çankaya">Çankaya</option>
               <option value="Mamak">Mamak</option>
             </>
           )}

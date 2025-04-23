@@ -10,7 +10,7 @@ body {
 
 /* Başlık ve header */
 .header {
-  background: linear-gradient(135deg, #333333, #000000); /* Başlık için gri-siyah geçişi */
+  background: linear-gradient(55deg, #333333, #000000); /* Başlık için gri-siyah geçişi */
   padding: 20px;
   color: #ffffff;
   font-size: 2rem;
@@ -81,7 +81,7 @@ input, select {
 }
 
 .parking-spot.dolu {
-  background-color: red;
+  background-color:red;
 }
 
 .parking-spot.rezervasyon {
