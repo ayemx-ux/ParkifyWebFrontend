@@ -15,39 +15,38 @@ import MonthlyData from "./MonthlyData";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
- 
 
   return (
-    <Router>
-      <div className="app-container">
-        <header className="header">
-          <h1>Parkify</h1>
-        </header>
+      <Router>
+        <div className="app-container">
+          <header className="header">
+            <h1>Parkify</h1>
+          </header>
 
-        {!isLoggedIn && (
-          <div className="button-container">
-            <Link to="/user">
-              <button className="custom-button">Misafir Girişi</button>
-            </Link>
-            <Link to="/admin">
-              <button className="custom-button">Yönetici Girişi</button>
-            </Link>
-          </div>
-        )}
+          {!isLoggedIn && (
+              <div className="button-container">
+                <Link to="/user">
+                  <button className="custom-button">Misafir Girişi</button>
+                </Link>
+                <Link to="/admin">
+                  <button className="custom-button">Yönetici Girişi</button>
+                </Link>
+              </div>
+          )}
 
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/user" element={<ParkingSelection />} /> {/* Misafir yönlendirmesi */}
-          <Route path="/admin" element={<AdminPage setIsLoggedIn={setIsLoggedIn} />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/parking-view" element={<ParkingView userType={"guest"} />} />
-          <Route path="/daily-data" element={<DailyData />} />
-          <Route path="/weekly-data" element={<WeeklyData />} />
-          <Route path="/monthly-data" element={<MonthlyData />} />
-        </Routes>
-      </div>
-    </Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/user" element={<ParkingSelection />} />
+            <Route path="/admin" element={<AdminPage setIsLoggedIn={setIsLoggedIn} />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/parking-view" element={<ParkingView userType={isLoggedIn ? "admin" : "guest"} />} />
+            <Route path="/daily-data" element={<DailyData />} />
+            <Route path="/weekly-data" element={<WeeklyData />} />
+            <Route path="/monthly-data" element={<MonthlyData />} />
+          </Routes>
+        </div>
+      </Router>
   );
 }
 

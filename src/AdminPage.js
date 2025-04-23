@@ -1,77 +1,87 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Yönlendirme için
+import { useNavigate } from "react-router-dom";
 
 function AdminPage({ setIsLoggedIn }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // React Router kullanarak yönlendirme
+  const navigate = useNavigate();
 
-  // Giriş formu gönderildiğinde çalışacak fonksiyon
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Formun sayfayı yenilemesini engeller
+    e.preventDefault();
 
     try {
-      const response = await fetch("https://localhost:5001/api/admin/login", {
+      const response = await fetch("http://localhost:5181/api/admin/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          email: username,
-          password: password
-        })
+          body: JSON.stringify({
+              adminId: 0,
+              name: "",
+              email: username,
+              password: password,
+              lotId: 0
+          })
+
       });
 
-      if (response.ok) {
+      console.log("HTTP durum kodu:", response.status); // 🔍 Hata ayıklama için log
+
+
+
+        if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("lotId", data.lot_id); // Oturum için lotId'yi sakla
-        alert(`Hoş geldiniz, ${data.name}!`);
-        setIsLoggedIn(true); // Giriş yapıldığında butonları gizlemek için state güncellenir
-        navigate("/admin-dashboard"); // Yönetici için özel dashboard sayfasına yönlendir
+        localStorage.setItem("adminName", data.name);
+        localStorage.setItem("lotId", data.lot_id);
+        console.log("lotId:", localStorage.getItem("lotId"));
+
+            alert(`Hoş geldiniz, ${data.name}!`);
+        setIsLoggedIn(true);
+        navigate("/admin-dashboard");
       } else if (response.status === 401) {
-        alert("Giriş başarısız: Hatalı kullanıcı adı veya şifre.");
+        alert("Giriş başarısız: Hatalı e-posta veya şifre.");
       } else {
-        alert("Bir hata oluştu.");
+        alert("Bir hata oluştu. Sunucudan beklenmeyen yanıt.");
       }
     } catch (error) {
-      console.error("Hata:", error);
-      alert("Sunucuya bağlanılamadı.");
+      console.error("Sunucuya bağlanırken hata:", error);
+      alert("Sunucuya bağlanılamadı. Backend çalışıyor mu?");
     }
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "50px" }}>
-      <h2>Yönetici Girişi Sayfası</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Yönetici E-Posta"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={{
-            padding: "10px",
-            marginBottom: "10px",
-            width: "200px"
-          }}
-        />
-        <br />
-        <input
-          type="password"
-          placeholder="Yönetici Şifre"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            padding: "10px",
-            marginBottom: "20px",
-            width: "200px"
-          }}
-        />
-        <br />
-        <button type="submit" className="custom-button">
-          Giriş Yap
-        </button>
-      </form>
-    </div>
+      <div style={{ textAlign: "center", padding: "50px" }}>
+        <h2>Yönetici Girişi Sayfası</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+              type="text"
+              placeholder="Yönetici E-Posta"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              style={{
+                padding: "10px",
+                marginBottom: "10px",
+                width: "200px"
+              }}
+          />
+          <br />
+          <input
+              type="password"
+              placeholder="Yönetici Şifre"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{
+                padding: "10px",
+                marginBottom: "20px",
+                width: "200px"
+              }}
+          />
+          <br />
+          <button type="submit" className="custom-button">
+            Giriş Yap
+          </button>
+        </form>
+      </div>
   );
 }
 
