@@ -12,7 +12,7 @@ function AdminPage({ setIsLoggedIn }) {
     try {
       const response = await fetch("http://localhost:5181/api/admin/login", {
         method: "POST",
-        headers: {
+        headers: {  // header parkingselectionda gerekmiyordu çünkü sadece get veri aldık göndermedik
           "Content-Type": "application/json"
         },
           body: JSON.stringify({
@@ -25,14 +25,14 @@ function AdminPage({ setIsLoggedIn }) {
 
       });
 
-      console.log("HTTP durum kodu:", response.status); // 🔍 Hata ayıklama için log
+      console.log("HTTP durum kodu:", response.status); // Hata ayıklama için log
 
 
 
         if (response.ok) {
         const data = await response.json();
         localStorage.setItem("adminName", data.name);
-        localStorage.setItem("lotId", data.lot_id);
+        localStorage.setItem("lotId", data.lot_id); //Admin adı başka yerlerde görünsün,Hangi otoparkla ilişkili olduğunu hatırlayabilesin.
         console.log("lotId:", localStorage.getItem("lotId"));
 
             alert(`Hoş geldiniz, ${data.name}!`);

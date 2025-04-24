@@ -7,8 +7,8 @@ function ParkingSelection() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("http://localhost:5181/api/parkinglots")
-            .then((res) => res.json())
+        fetch("http://localhost:5181/api/parkinglots")// get isteği gönderildi çekilen veri json formatta döner db deki otopark listesini alıyor
+            .then((res) => res.json())// const data = await response.json();
             .then((data) => {
                 setLots(data);
             })
@@ -20,7 +20,7 @@ function ParkingSelection() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (selectedLotId) {
+        if (selectedLotId) { //doğrudan misafir girişi içindir kullanıcının seçtiği otoparkı locale kaydediyor
             localStorage.setItem("lotId", selectedLotId);
             localStorage.setItem("userType", "guest");
             navigate("/parking-view");

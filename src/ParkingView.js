@@ -6,7 +6,7 @@ function ParkingView() {
     const [hoveredSpot, setHoveredSpot] = useState(null);
 
     useEffect(() => {
-        const lotId = parseInt(localStorage.getItem("lotId"));
+        const lotId = parseInt(localStorage.getItem("lotId")); // selectionda seçilen lotId
         console.log("Aktif lotId:", lotId);
 
         fetch(`http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}`)
