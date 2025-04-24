@@ -7,8 +7,13 @@ function ParkingSelection() {
     const navigate = useNavigate();
 
     useEffect(() => {
+<<<<<<< HEAD
         fetch("http://localhost:5181/api/parkinglots")// get isteği gönderildi çekilen veri json formatta döner db deki otopark listesini alıyor
             .then((res) => res.json())// const data = await response.json();
+=======
+        fetch("http://localhost:5181/api/parkinglots") // get isteği gönderildi çekilen veri json formatta döner db deki otopark listesini alıyor
+            .then((res) => res.json()) // const data = await response.json();
+>>>>>>> 045407a (Son güncellemeler eklendi)
             .then((data) => {
                 setLots(data);
             })
@@ -18,9 +23,13 @@ function ParkingSelection() {
     }, []);
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault();  //sayfa yenilenmez
 
+<<<<<<< HEAD
         if (selectedLotId) { //doğrudan misafir girişi içindir kullanıcının seçtiği otoparkı locale kaydediyor
+=======
+        if (selectedLotId) {  //doğrudan misafir girişi içindir kullanıcının seçtiği otoparkı locale kaydediyor
+>>>>>>> 045407a (Son güncellemeler eklendi)
             localStorage.setItem("lotId", selectedLotId);
             localStorage.setItem("userType", "guest");
             navigate("/parking-view");

@@ -25,14 +25,23 @@ function AdminPage({ setIsLoggedIn }) {
 
       });
 
+<<<<<<< HEAD
       console.log("HTTP durum kodu:", response.status); // Hata ayıklama için log
+=======
+      console.log("HTTP durum kodu:", response.status); //  Hata ayıklama için log
+>>>>>>> 045407a (Son güncellemeler eklendi)
 
 
 
-        if (response.ok) {
+        if (response.ok) {  
+
         const data = await response.json();
         localStorage.setItem("adminName", data.name);
+<<<<<<< HEAD
         localStorage.setItem("lotId", data.lot_id); //Admin adı başka yerlerde görünsün,Hangi otoparkla ilişkili olduğunu hatırlayabilesin.
+=======
+        localStorage.setItem("lotId", data.lot_id); ////Admin adı başka yerlerde görünsün,Hangi otoparkla ilişkili olduğunu hatırlayabilesin.
+>>>>>>> 045407a (Son güncellemeler eklendi)
         console.log("lotId:", localStorage.getItem("lotId"));
 
             alert(`Hoş geldiniz, ${data.name}!`);
