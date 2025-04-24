@@ -4,7 +4,6 @@ import "./App.css";
 
 // Sayfa bileşenlerini import et
 import AdminPage from "./AdminPage";
-import Dashboard from "./Dashboard";
 import AdminDashboard from "./AdminDashboard";
 import HomePage from "./HomePage";
 import ParkingSelection from "./ParkingSelection";
