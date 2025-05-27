@@ -8,7 +8,11 @@ import AdminDashboard from "./AdminDashboard";
 import HomePage from "./HomePage";
 import ParkingSelection from "./ParkingSelection";
 import ParkingView from "./ParkingView";
+<<<<<<< HEAD
 import Data from "./Data";
+=======
+import AllData from "./Data"; 
+>>>>>>> bcf2504 (Otopark projesi yedeği)
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
