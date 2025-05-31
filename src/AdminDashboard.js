@@ -1,8 +1,11 @@
 import React from "react";
+import NavigationButtons from "./NavigationButtons";
+
 import { Link } from "react-router-dom";
 
 function AdminDashboard() {
     const adminName = localStorage.getItem("adminName");
+    
 
     return (
         <div style={{ textAlign: "center", padding: "50px" }}>
@@ -14,7 +17,13 @@ function AdminDashboard() {
                 <Link to="/data">
                     <button className="custom-button">Veri Analizi</button>
                 </Link>
+                <Link to="/penalties">
+  <button className="custom-button">Ceza Kayıtlarını Gör</button>
+</Link>
+
             </div>
+            <NavigationButtons />
+
         </div>
     );
 }

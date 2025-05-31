@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import NavigationButtons from "./NavigationButtons";
 
 function ParkingView() {
     const [parkingSpots, setParkingSpots] = useState([]);
@@ -7,13 +8,24 @@ function ParkingView() {
 
     useEffect(() => {
 <<<<<<< HEAD
+<<<<<<< HEAD
         const lotId = parseInt(localStorage.getItem("lotId")); // selectionda seçilen lotId
 =======
         const lotId = parseInt(localStorage.getItem("lotId")); // selectionda seçilen lotıd
 >>>>>>> 045407a (Son güncellemeler eklendi)
         console.log("Aktif lotId:", lotId);
+=======
+        const lotId = parseInt(localStorage.getItem("lotId"));
+        const floor = localStorage.getItem("floor"); // sadece Başkent için vardır
+        console.log("Aktif lotId:", lotId, "Kat:", floor);
+>>>>>>> 505c831 (Projenin son hali)
 
-        fetch(`http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}`)
+        // endpoint'e kat bilgisi ekle (sadece varsa)
+        const url = floor
+            ? `http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}?floor=${floor}`
+            : `http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}`;
+
+        fetch(url)
             .then((res) => {
                 if (!res.ok) {
                     throw new Error(`API isteği başarısız: ${res.status}`);
@@ -26,8 +38,8 @@ function ParkingView() {
                     status: space.isOccupied
                         ? "Dolu"
                         : space.isReserved
-                            ? "Rezervasyon"
-                            : "Boş"
+                        ? "Rezervasyon"
+                        : "Boş",
                 }));
                 setParkingSpots(formatted);
                 setLoading(false);
@@ -49,7 +61,9 @@ function ParkingView() {
                         <div
                             key={spot.id}
                             className={`parking-spot ${spot.status.toLowerCase()}`}
-                            onMouseEnter={() => spot.status === "Boş" && setHoveredSpot(spot.id)}
+                            onMouseEnter={() =>
+                                spot.status === "Boş" && setHoveredSpot(spot.id)
+                            }
                             onMouseLeave={() => setHoveredSpot(null)}
                             style={{
                                 margin: "10px",
@@ -59,12 +73,12 @@ function ParkingView() {
                                     spot.status === "Boş"
                                         ? "green"
                                         : spot.status === "Dolu"
-                                            ? "red"
-                                            : "orange",
+                                        ? "red"
+                                        : "orange",
                                 color: "#fff",
                                 display: "inline-block",
                                 width: "80px",
-                                position: "relative"
+                                position: "relative",
                             }}
                         >
                             {spot.id} - {spot.status}
@@ -81,16 +95,18 @@ function ParkingView() {
                                         borderRadius: "5px",
                                         fontSize: "12px",
                                         whiteSpace: "nowrap",
-                                        zIndex: 10
+                                        zIndex: 10,
                                     }}
                                 >
-                                    Rezervasyon için Parkify mobil uygulamamızı indirebilirsiniz
+                                    Rezervasyon için Parkify mobil uygulamamızı
+                                    indirebilirsiniz
                                 </div>
                             )}
                         </div>
                     ))}
                 </div>
             )}
+            <NavigationButtons />
         </div>
     );
 }

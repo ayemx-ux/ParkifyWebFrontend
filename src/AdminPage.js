@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import NavigationButtons from "./NavigationButtons";
 import { useNavigate } from "react-router-dom";
 
 function AdminPage({ setIsLoggedIn }) {
@@ -90,6 +91,8 @@ function AdminPage({ setIsLoggedIn }) {
             Giriş Yap
           </button>
         </form>
+        <NavigationButtons />
+
       </div>
   );
 }
