@@ -4,34 +4,29 @@ import { useNavigate } from "react-router-dom";
 function ParkingSelection() {
     const [lots, setLots] = useState([]);
     const [selectedLotId, setSelectedLotId] = useState("");
-    const [selectedFloor, setSelectedFloor] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("http://localhost:5181/api/parkinglots")
-            .then((res) => res.json())
-            .then((data) => setLots(data))
-            .catch((err) => console.error("Otopark verisi alınamadı:", err));
+        fetch("http://localhost:5181/api/parkinglots")// get isteği gönderildi çekilen veri json formatta döner db deki otopark listesini alıyor
+            .then((res) => res.json())// const data = await response.json();
+            .then((data) => {
+                setLots(data);
+            })
+            .catch((err) => {
+                console.error("Otopark verisi alınamadı:", err);
+            });
     }, []);
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault();  //sayfa yenilenmez
 
-        if (selectedLotId === "4" && selectedFloor === "") {
-            alert("Lütfen bir kat seçin.");
-            return;
-        }
-
-        localStorage.setItem("lotId", selectedLotId);
-        localStorage.setItem("userType", "guest");
-
-        if (selectedLotId === "4") {
-            localStorage.setItem("floor", selectedFloor);
+        if (selectedLotId) { //doğrudan misafir girişi içindir kullanıcının seçtiği otoparkı locale kaydediyor
+            localStorage.setItem("lotId", selectedLotId);
+            localStorage.setItem("userType", "guest");
+            navigate("/parking-view");
         } else {
-            localStorage.removeItem("floor"); // Diğer lotlar için kat bilgisi silinir
+            alert("Lütfen bir otopark seçin.");
         }
-
-        navigate("/parking-view");
     };
 
     return (
@@ -40,10 +35,7 @@ function ParkingSelection() {
             <form onSubmit={handleSubmit}>
                 <select
                     value={selectedLotId}
-                    onChange={(e) => {
-                        setSelectedLotId(e.target.value);
-                        setSelectedFloor(""); // lot değişince kat da sıfırlanmalı
-                    }}
+                    onChange={(e) => setSelectedLotId(e.target.value)}
                     style={{
                         padding: "10px",
                         marginBottom: "20px",
@@ -51,7 +43,7 @@ function ParkingSelection() {
                         borderRadius: "5px",
                         backgroundColor: "#222",
                         color: "#fff",
-                        border: "1px solid #444",
+                        border: "1px solid #444"
                     }}
                 >
                     <option value="">Bir otopark seçin</option>
@@ -61,32 +53,6 @@ function ParkingSelection() {
                         </option>
                     ))}
                 </select>
-
-                {/* Başkent Üniversitesi (lotId = 4) seçilince kat seçimi */}
-                {selectedLotId === "4" && (
-                    <div>
-                        <p>Bu otopark 3 katlıdır. Lütfen kat seçin:</p>
-                        <select
-                            value={selectedFloor}
-                            onChange={(e) => setSelectedFloor(e.target.value)}
-                            style={{
-                                padding: "10px",
-                                marginBottom: "20px",
-                                width: "300px",
-                                borderRadius: "5px",
-                                backgroundColor: "#222",
-                                color: "#fff",
-                                border: "1px solid #444",
-                            }}
-                        >
-                            <option value="">Bir kat seçin</option>
-                            <option value="1">Kat 1</option>
-                            <option value="2">Kat 2</option>
-                            <option value="3">Kat 3</option>
-                        </select>
-                    </div>
-                )}
-
                 <br />
                 <button type="submit" className="custom-button">
                     Park Alanlarını Göster
@@ -97,3 +63,4 @@ function ParkingSelection() {
 }
 
 export default ParkingSelection;
+

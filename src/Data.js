@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NavigationButtons from "./NavigationButtons";
 
 function Data() {
     const [lotId, setLotId] = useState(null);
@@ -69,7 +68,6 @@ function Data() {
                     />
                 </div>
             ))}
-            <NavigationButtons />
         </div>
     );
 }

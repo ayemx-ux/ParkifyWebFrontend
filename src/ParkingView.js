@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import NavigationButtons from "./NavigationButtons";
 
 function ParkingView() {
     const [parkingSpots, setParkingSpots] = useState([]);
@@ -7,16 +6,10 @@ function ParkingView() {
     const [hoveredSpot, setHoveredSpot] = useState(null);
 
     useEffect(() => {
-        const lotId = parseInt(localStorage.getItem("lotId"));
-        const floor = localStorage.getItem("floor"); // sadece Başkent için vardır
-        console.log("Aktif lotId:", lotId, "Kat:", floor);
+        const lotId = parseInt(localStorage.getItem("lotId")); // selectionda seçilen lotId
+        console.log("Aktif lotId:", lotId);
 
-        // endpoint'e kat bilgisi ekle (sadece varsa)
-        const url = floor
-            ? `http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}?floor=${floor}`
-            : `http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}`;
-
-        fetch(url)
+        fetch(`http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}`)
             .then((res) => {
                 if (!res.ok) {
                     throw new Error(`API isteği başarısız: ${res.status}`);
@@ -30,7 +23,7 @@ function ParkingView() {
                         ? "Dolu"
                         : space.isReserved
                             ? "Rezervasyon"
-                            : "Boş",
+                            : "Boş"
                 }));
                 setParkingSpots(formatted);
                 setLoading(false);
@@ -52,9 +45,7 @@ function ParkingView() {
                         <div
                             key={spot.id}
                             className={`parking-spot ${spot.status.toLowerCase()}`}
-                            onMouseEnter={() =>
-                                spot.status === "Boş" && setHoveredSpot(spot.id)
-                            }
+                            onMouseEnter={() => spot.status === "Boş" && setHoveredSpot(spot.id)}
                             onMouseLeave={() => setHoveredSpot(null)}
                             style={{
                                 margin: "10px",
@@ -69,7 +60,7 @@ function ParkingView() {
                                 color: "#fff",
                                 display: "inline-block",
                                 width: "80px",
-                                position: "relative",
+                                position: "relative"
                             }}
                         >
                             {spot.id} - {spot.status}
@@ -86,18 +77,16 @@ function ParkingView() {
                                         borderRadius: "5px",
                                         fontSize: "12px",
                                         whiteSpace: "nowrap",
-                                        zIndex: 10,
+                                        zIndex: 10
                                     }}
                                 >
-                                    Rezervasyon için Parkify mobil uygulamamızı
-                                    indirebilirsiniz
+                                    Rezervasyon için Parkify mobil uygulamamızı indirebilirsiniz
                                 </div>
                             )}
                         </div>
                     ))}
                 </div>
             )}
-            <NavigationButtons />
         </div>
     );
 }
