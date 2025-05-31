@@ -7,18 +7,9 @@ function ParkingView() {
     const [hoveredSpot, setHoveredSpot] = useState(null);
 
     useEffect(() => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        const lotId = parseInt(localStorage.getItem("lotId")); // selectionda seçilen lotId
-=======
-        const lotId = parseInt(localStorage.getItem("lotId")); // selectionda seçilen lotıd
->>>>>>> 045407a (Son güncellemeler eklendi)
-        console.log("Aktif lotId:", lotId);
-=======
         const lotId = parseInt(localStorage.getItem("lotId"));
         const floor = localStorage.getItem("floor"); // sadece Başkent için vardır
         console.log("Aktif lotId:", lotId, "Kat:", floor);
->>>>>>> 505c831 (Projenin son hali)
 
         // endpoint'e kat bilgisi ekle (sadece varsa)
         const url = floor
@@ -38,8 +29,8 @@ function ParkingView() {
                     status: space.isOccupied
                         ? "Dolu"
                         : space.isReserved
-                        ? "Rezervasyon"
-                        : "Boş",
+                            ? "Rezervasyon"
+                            : "Boş",
                 }));
                 setParkingSpots(formatted);
                 setLoading(false);
@@ -73,8 +64,8 @@ function ParkingView() {
                                     spot.status === "Boş"
                                         ? "green"
                                         : spot.status === "Dolu"
-                                        ? "red"
-                                        : "orange",
+                                            ? "red"
+                                            : "orange",
                                 color: "#fff",
                                 display: "inline-block",
                                 width: "80px",
