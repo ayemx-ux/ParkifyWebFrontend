@@ -1,50 +1,59 @@
 import React, { useState, useEffect } from "react";
 
-function ParkingView() {
+function AdminParkingView() {
     const [parkingSpots, setParkingSpots] = useState([]);
     const [loading, setLoading] = useState(true);
     const [hoveredSpot, setHoveredSpot] = useState(null);
-    const [layout, setLayout] = useState({ rows: 2, columns: 3 });
-    const [parkingLotName, setParkingLotName] = useState(""); // Yeni state
+    const [layout, setLayout] = useState({ rows: 1, columns: 1 }); // Başlangıçta 1x1
+    const [parkingLotName, setParkingLotName] = useState("");
 
     useEffect(() => {
         const lotId = parseInt(localStorage.getItem("lotId"));
-        const floorNumber = parseInt(localStorage.getItem("floorNumber"));
+        if (!lotId) {
+            alert("Otopark ID bulunamadı!");
+            return;
+        }
 
-        // Otopark bilgilerini çek ve isim set et
+        // Otopark bilgisi ve layout (rows: toplam kat sayısı, columns: 1 sütun)
         fetch(`http://localhost:5181/api/parkinglots/${lotId}`)
             .then((res) => res.json())
             .then((data) => {
-                if (data) {
-                    setParkingLotName(data.name || "");
-                    if (data.layout) {
-                        setLayout({
-                            rows: data.layout.rows || 2,
-                            columns: data.layout.columns || 3
-                        });
-                    }
-                }
+                setParkingLotName(data.name || "");
+                setLayout({
+                    rows: data.numOfFloors || 1, // Tüm katlar alt alta
+                    columns: 1, // Sadece 1 sütun olacak
+                });
             })
-            .catch((err) => console.error("Layout alınamadı:", err));
+            .catch((err) => console.error("Otopark bilgisi alınamadı:", err));
 
-        // Park yerlerini çek
+        // Tüm katlardaki park alanları alınacak (floorNumber filtresi yok)
         fetch(`http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}`)
             .then((res) => res.json())
             .then((data) => {
-                const filtered = data.filter((space) => space.floorNumber === floorNumber);
-                const formatted = filtered.map((space) => ({
+                // Kat numarasına göre sıralayalım (alt alta listeleme için)
+                const sorted = data.sort((a, b) => {
+                    if (a.floorNumber === b.floorNumber) {
+                        return a.spaceNumber.localeCompare(b.spaceNumber);
+                    }
+                    return a.floorNumber - b.floorNumber;
+                });
+
+                // JSON verisini grid görünümüne uygun formata çevirelim
+                const formatted = sorted.map((space) => ({
                     id: space.spaceNumber,
                     status: space.isOccupied
                         ? "Dolu"
                         : space.isReserved
                             ? "Rezervasyon"
-                            : "Boş"
+                            : "Boş",
+                    floor: space.floorNumber,
                 }));
+
                 setParkingSpots(formatted);
                 setLoading(false);
             })
             .catch((err) => {
-                console.error("Veri alınamadı:", err);
+                console.error("Park alanları alınamadı:", err);
                 setLoading(false);
             });
     }, []);
@@ -58,20 +67,17 @@ function ParkingView() {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: `repeat(${layout.columns}, 1fr)`,
-                        gridTemplateRows: `repeat(${layout.rows}, auto)`,
-                        gridAutoFlow: "column",
+                        gridTemplateColumns: `repeat(${layout.columns}, 1fr)`, // 1 sütun
+                        gridTemplateRows: `repeat(${layout.rows}, auto)`, // Tüm kat sayısı kadar satır
                         gap: "20px",
-                        justifyItems: "center"
+                        justifyItems: "center",
                     }}
                 >
                     {parkingSpots.map((spot, index) => {
-                        const rowGroup = Math.floor(index / (layout.columns * 2));
-                        const isFirstItemInGroup = (index % (layout.columns * 2)) === 0 && rowGroup > 0;
-
+                        const isMarginTop = index > 0 && spot.floor !== parkingSpots[index - 1].floor;
                         return (
                             <div
-                                key={spot.id}
+                                key={spot.id + "-" + index}
                                 onMouseEnter={() => spot.status === "Boş" && setHoveredSpot(spot.id)}
                                 onMouseLeave={() => setHoveredSpot(null)}
                                 style={{
@@ -84,14 +90,14 @@ function ParkingView() {
                                                 ? "red"
                                                 : "orange",
                                     color: "#fff",
-                                    width: "80px",
+                                    width: "120px",
                                     textAlign: "center",
                                     position: "relative",
-                                    marginTop: isFirstItemInGroup ? "30px" : "0px",
-                                    transition: "margin 0.3s"
+                                    marginTop: isMarginTop ? "30px" : "0px",
+                                    transition: "margin 0.3s",
                                 }}
                             >
-                                {spot.id} - {spot.status}
+                                {`Kat ${spot.floor} - ${spot.id} - ${spot.status}`}
                                 {hoveredSpot === spot.id && (
                                     <div
                                         style={{
@@ -105,7 +111,7 @@ function ParkingView() {
                                             borderRadius: "5px",
                                             fontSize: "12px",
                                             whiteSpace: "nowrap",
-                                            zIndex: 10
+                                            zIndex: 10,
                                         }}
                                     >
                                         Rezervasyon için Parkify mobil uygulamamızı indirebilirsiniz
@@ -120,4 +126,4 @@ function ParkingView() {
     );
 }
 
-export default ParkingView;
+export default AdminParkingView;

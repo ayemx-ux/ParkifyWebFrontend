@@ -10,6 +10,7 @@ import ParkingView from "./ParkingView";
 import Data from "./Data";
 import PenaltyList from "./PenaltyList";
 import ComplaintsDashboard from "./ComplaintsDashboard";
+import AdminParkingView from "./AdminParkingView";
 
 
 function AppWrapper() {
@@ -52,7 +53,9 @@ function AppWrapper() {
         <Route path="/parking-view" element={<ParkingView userType={isLoggedIn ? "admin" : "guest"} />} />
         <Route path="/data" element={<Data />} />
         <Route path="/penalties" element={<PenaltyList />} />
-      <Route path="/complaints" element={<ComplaintsDashboard />} />
+        <Route path="/complaints" element={<ComplaintsDashboard />} />
+          <Route path="/admin-parking-view" element={<AdminParkingView />} />
+
 
       </Routes>
     </div>

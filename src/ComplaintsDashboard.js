@@ -1,81 +1,75 @@
-import React, { useState } from "react";
-
-const initialComplaints = [
-  {
-    email: "kullanici1@example.com",
-    plate: "34ABC123",
-    penaltyReason: "",
-    penaltyPoint: "",
-    imageUrl: "https://via.placeholder.com/200x120?text=PLAKA",
-  },
-  {
-    email: "kullanici2@example.com",
-    plate: "06XYZ789",
-    penaltyReason: "",
-    penaltyPoint: "",
-    imageUrl: "https://via.placeholder.com/200x120?text=PLAKA",
-  },
-];
+import React, { useEffect, useState } from "react";
 
 function ComplaintsDashboard() {
-  const [complaints, setComplaints] = useState(initialComplaints);
+  const [complaints, setComplaints] = useState([]);
 
-  const updateField = (index, field, value) => {
-    const updated = [...complaints];
-    updated[index][field] = value;
-    setComplaints(updated);
-  };
+  useEffect(() => {
+    // localStorage'dan lotId'yi al
+    const lotId = localStorage.getItem("lotId");
+    if (!lotId) {
+      console.error("lotId not found in localStorage!");
+      return;
+    }
 
-  const handleApprove = (index) => {
-    const data = complaints[index];
-    alert(`Ceza onaylandı:\nPlaka: ${data.plate}\nNeden: ${data.penaltyReason}\nPuan: ${data.penaltyPoint}`);
+    // Şikayetleri API'den al
+    fetch(`http://localhost:5181/api/Complaints/GetByLot/${lotId}`)
+        .then((response) => response.json())
+        .then((data) => setComplaints(data))
+        .catch((error) => console.error("API Hatası:", error));
+  }, []);
+
+  // Şikayeti çözümle
+  const handleApprove = (complaintId) => {
+    const adminEmail = localStorage.getItem("adminEmail");
+    fetch(`http://localhost:5181/api/Complaints/MarkAsResolved?complaintId=${complaintId}&adminEmail=${adminEmail}`, {
+      method: "PUT",
+    })
+        .then((response) => {
+          if (response.ok) {
+            alert("Şikayet çözüldü olarak işaretlendi.");
+            window.location.reload();
+          } else {
+            alert("Şikayet çözümleme başarısız.");
+          }
+        })
+        .catch((error) => console.error("API Hatası:", error));
   };
 
   return (
-    <div className="app-container">
-      <h2 className="header">Şikayetler</h2>
+      <div className="app-container">
+        <h2 className="header">Şikayetler</h2>
 
-      {complaints.map((complaint, index) => (
-        <div key={index} style={styles.cardContainer}>
-          {/* Sol taraf - Görsel */}
-          <div style={styles.imageWrapper}>
-            <img src={complaint.imageUrl} alt="Plaka" style={styles.image} />
-          </div>
+        {complaints.map((complaint) => (
+            <div key={complaint.id} style={styles.cardContainer}>
+              {/* Sol taraf - Görsel */}
+              <div style={styles.imageWrapper}>
+                <img
+                    src={`http://localhost:5181/${complaint.imagePath}`}
+                    alt="Plaka"
+                    style={styles.image}
+                />
+              </div>
 
-          {/* Sağ taraf - Bilgiler */}
-          <div style={styles.infoSection}>
-            <p><strong>Kullanıcı E-Posta:</strong> {complaint.email}</p>
+              {/* Sağ taraf - Bilgiler */}
+              <div style={styles.infoSection}>
+                <p><strong>Kullanıcı E-Posta:</strong> {complaint.userEmail}</p>
+                <p><strong>Plaka:</strong> {complaint.licensePlateDetected}</p>
+                <p><strong>Alan:</strong> {complaint.spaceNumber}</p>
+                <p><strong>Tarih:</strong> {new Date(complaint.createdAt).toLocaleString()}</p>
+                <p><strong>Durum:</strong> {complaint.status}</p>
 
-            <label>Plaka:</label>
-            <input
-              type="text"
-              value={complaint.plate}
-              onChange={(e) => updateField(index, "plate", e.target.value)}
-            />
-
-            <label>Ceza Nedeni:</label>
-            <input
-              type="text"
-              placeholder="Ceza nedenini yazın"
-              value={complaint.penaltyReason}
-              onChange={(e) => updateField(index, "penaltyReason", e.target.value)}
-            />
-
-            <label>Ceza Puanı:</label>
-            <input
-              type="number"
-              placeholder="Ceza puanı"
-              value={complaint.penaltyPoint}
-              onChange={(e) => updateField(index, "penaltyPoint", e.target.value)}
-            />
-
-            <button className="custom-button" onClick={() => handleApprove(index)}>
-              ✅ Ceza Onayla
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
+                {complaint.status === "Pending" && (
+                    <button
+                        className="custom-button"
+                        onClick={() => handleApprove(complaint.id)}
+                    >
+                      ✅ Şikayeti Çöz
+                    </button>
+                )}
+              </div>
+            </div>
+        ))}
+      </div>
   );
 }
 
