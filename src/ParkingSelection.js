@@ -9,7 +9,7 @@ function ParkingSelection() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("http://localhost:5181/api/parkinglots")
+        fetch("http://13.48.10.236:5181/api/parkinglots")
             .then((res) => res.json())
             .then((data) => setLots(data))
             .catch((err) => console.error("Otopark verisi alınamadı:", err));

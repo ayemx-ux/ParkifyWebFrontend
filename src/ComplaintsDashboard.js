@@ -11,7 +11,7 @@ function ComplaintsDashboard() {
       return;
     }
 
-    fetch(`http://localhost:5181/api/Complaints/GetByLot/${lotId}`)
+    fetch(`http://13.48.10.236:5181/api/Complaints/GetByLot/${lotId}`)
         .then((response) => response.json())
         .then((data) => setComplaints(data))
         .catch((error) => console.error("API Hatası:", error));
@@ -34,21 +34,21 @@ function ComplaintsDashboard() {
       penaltyPoints: parseInt(penaltyPoints),
     };
 
-    // 🚀 1️⃣ Ceza ver
-    fetch("http://localhost:5181/api/Penalties/Issue", {
+    //Ceza ver
+    fetch("http://13.48.10.236:5181/api/Penalties/Issue", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(penaltyRequest),
     })
         .then((response) => {
           if (response.ok) {
-            // 🚀 2️⃣ Şikayeti resolved yap
-            fetch(`http://localhost:5181/api/Complaints/MarkAsResolved?complaintId=${complaintId}&adminEmail=${adminEmail}`, {
+            //Şikayeti resolved yap
+            fetch(`http://13.48.10.236:5181/api/Complaints/MarkAsResolved?complaintId=${complaintId}&adminEmail=${adminEmail}`, {
               method: "PUT",
             })
                 .then((res) => {
                   if (res.ok) {
-                    // 🚀 UI'da durumu "Resolved" yap
+                    //UI'da durumu "Resolved" yap
                     setComplaints((prev) =>
                         prev.map((c) =>
                             c.id === complaintId ? { ...c, status: "Resolved" } : c
@@ -87,7 +87,7 @@ function ComplaintsDashboard() {
               <div key={complaint.id} style={styles.cardContainer}>
                 <div style={styles.imageWrapper}>
                   <img
-                      src={`http://localhost:5181/${complaint.imagePath}`}
+                      src={`http://13.48.10.236:5181/${complaint.imagePath}`}
                       alt="Plaka"
                       style={styles.image}
                   />

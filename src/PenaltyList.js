@@ -12,7 +12,7 @@ function PenaltyList() {
       return;
     }
 
-    fetch(`http://localhost:5181/api/Penalties/GetByAdmin/${adminEmail}`)
+    fetch(`http://13.48.10.236:5181/api/Penalties/GetByAdmin/${adminEmail}`)
         .then((response) => response.json())
         .then((data) => setPenalties(data))
         .catch((error) => console.error("API Hatası:", error));

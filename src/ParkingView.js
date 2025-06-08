@@ -15,7 +15,7 @@ function ParkingView() {
         setLotId(storedLotId);
         if (!storedLotId) return;
 
-        fetch(`http://localhost:5181/api/parkinglots/${storedLotId}`)
+        fetch(`http://13.48.10.236:5181/api/parkinglots/${storedLotId}`)
             .then((res) => res.json())
             .then((data) => {
                 setParkingLotName(data.name || "");
@@ -33,7 +33,7 @@ function ParkingView() {
     useEffect(() => {
         if (!lotId) return;
 
-        fetch(`http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}`)
+        fetch(`http://13.48.10.236:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}`)
             .then((res) => res.json())
             .then((data) => {
                 const filtered = data.filter(

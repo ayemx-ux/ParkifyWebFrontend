@@ -10,7 +10,8 @@ function Data() {
         if (id) {
             setLotId(parseInt(id));
 
-            fetch("http://localhost:5181/api/parkinglots")
+            // .NET backend için IP ve port
+            fetch("http://13.48.10.236:5181/api/parkinglots")
                 .then((res) => res.json())
                 .then((data) => {
                     const lot = data.find((l) => l.lotId === parseInt(id));
@@ -18,7 +19,8 @@ function Data() {
                         setLotName(lot.name);
 
                         const safeName = lot.name.trim().replace(/\s+/g, "_");
-                        const base = "http://localhost:8000/static/plots";
+                        // Python FastAPI (8000)
+                        const base = "http://13.48.10.236:8000/static/plots";
 
                         const filenames = [
                             `${safeName}_heatmap.png`,
@@ -33,7 +35,8 @@ function Data() {
     }, []);
 
     const handleGeneratePlots = async () => {
-        const response = await fetch("http://localhost:8000/generate-plots", {
+        // Python FastAPI
+        const response = await fetch("http://13.48.10.236:8000/generate-plots", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ lot_id: parseInt(localStorage.getItem("lotId")) }),

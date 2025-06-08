@@ -9,11 +9,11 @@ function AdminPage({ setIsLoggedIn }) {
 
     const runOCR = async () => {
         try {
-            const response = await fetch("http://localhost:8001/run-ocr", {
+            const response = await fetch("http://13.48.10.236:8001/run-ocr", {
                 method: "POST"
             });
             const data = await response.json();
-            console.log(data.message);
+            console.log("OCR sonucu:", data.message);
         } catch (error) {
             console.error("OCR çalıştırılırken hata:", error);
         }
@@ -23,7 +23,7 @@ function AdminPage({ setIsLoggedIn }) {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:5181/api/admin/login", {
+            const response = await fetch("http://13.48.10.236:5181/api/admin/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -37,17 +37,16 @@ function AdminPage({ setIsLoggedIn }) {
                 }),
             });
 
-            console.log("HTTP durum kodu:", response.status); // Hata ayıklama için log
+            console.log("HTTP durum kodu:", response.status);
 
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem("adminName", data.name);
-                localStorage.setItem("lotId", data.lot_id); // Admin adı başka yerlerde görünsün, hangi otoparkla ilişkili olduğunu hatırlayabilesin.
+                localStorage.setItem("lotId", data.lot_id);
                 console.log("lotId:", localStorage.getItem("lotId"));
                 localStorage.setItem("adminEmail", username);
 
                 await runOCR();
-
 
                 alert(`Hoş geldiniz, ${data.name}!`);
                 setIsLoggedIn(true);
