@@ -5,39 +5,46 @@ function ParkingView() {
     const [loading, setLoading] = useState(true);
     const [hoveredSpot, setHoveredSpot] = useState(null);
     const [layout, setLayout] = useState({ rows: 2, columns: 3 });
-    const [parkingLotName, setParkingLotName] = useState(""); // Yeni state
+    const [parkingLotName, setParkingLotName] = useState("");
+    const [selectedFloor, setSelectedFloor] = useState(1);
+    const [numOfFloors, setNumOfFloors] = useState(1);
+    const [lotId, setLotId] = useState(null);
 
     useEffect(() => {
-        const lotId = parseInt(localStorage.getItem("lotId"));
-        const floorNumber = parseInt(localStorage.getItem("floorNumber"));
+        const storedLotId = parseInt(localStorage.getItem("lotId"));
+        setLotId(storedLotId);
+        if (!storedLotId) return;
 
-        // Otopark bilgilerini çek ve isim set et
-        fetch(`http://localhost:5181/api/parkinglots/${lotId}`)
+        fetch(`http://localhost:5181/api/parkinglots/${storedLotId}`)
             .then((res) => res.json())
             .then((data) => {
-                if (data) {
-                    setParkingLotName(data.name || "");
-                    if (data.layout) {
-                        setLayout({
-                            rows: data.layout.rows || 2,
-                            columns: data.layout.columns || 3
-                        });
-                    }
+                setParkingLotName(data.name || "");
+                setNumOfFloors(data.numOfFloors || 1);
+                if (data.layout) {
+                    setLayout({
+                        rows: data.layout.rows || 2,
+                        columns: data.layout.columns || 3
+                    });
                 }
             })
             .catch((err) => console.error("Layout alınamadı:", err));
+    }, []);
 
-        // Park yerlerini çek
+    useEffect(() => {
+        if (!lotId) return;
+
         fetch(`http://localhost:5181/api/parkingspaces/GetParkingSpacesByLotId/${lotId}`)
             .then((res) => res.json())
             .then((data) => {
-                const filtered = data.filter((space) => space.floorNumber === floorNumber);
+                const filtered = data.filter(
+                    (space) => space.floorNumber === selectedFloor
+                );
                 const formatted = filtered.map((space) => ({
                     id: space.spaceNumber,
                     status: space.isOccupied
                         ? "Dolu"
                         : space.isReserved
-                            ? "Rezervasyon"
+                            ? "Rezerve"
                             : "Boş"
                 }));
                 setParkingSpots(formatted);
@@ -47,11 +54,30 @@ function ParkingView() {
                 console.error("Veri alınamadı:", err);
                 setLoading(false);
             });
-    }, []);
+    }, [selectedFloor, lotId]);
 
     return (
         <div style={{ textAlign: "center", padding: "50px" }}>
-            <h2>{parkingLotName ? `${parkingLotName} Otopark Görünümü` : "Otopark Görünümü"}</h2>
+            <h2>
+                {parkingLotName ? `${parkingLotName} Otopark Görünümü` : "Otopark Görünümü"}
+            </h2>
+
+            {/* ❗ Kat seçimi sadece lotId 4 için */}
+            {lotId === 4 && (
+                <div style={{ marginBottom: "20px" }}>
+                    <label>Kat Seçiniz: </label>
+                    <select
+                        value={selectedFloor}
+                        onChange={(e) => setSelectedFloor(parseInt(e.target.value))}
+                        style={{ padding: "8px", borderRadius: "5px" }}
+                    >
+                        {Array.from({ length: numOfFloors }, (_, i) => (
+                            <option key={i + 1} value={i + 1}>{`Kat ${i + 1}`}</option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
             {loading ? (
                 <p>Yükleniyor...</p>
             ) : (
@@ -60,60 +86,52 @@ function ParkingView() {
                         display: "grid",
                         gridTemplateColumns: `repeat(${layout.columns}, 1fr)`,
                         gridTemplateRows: `repeat(${layout.rows}, auto)`,
-                        gridAutoFlow: "column",
                         gap: "20px",
                         justifyItems: "center"
                     }}
                 >
-                    {parkingSpots.map((spot, index) => {
-                        const rowGroup = Math.floor(index / (layout.columns * 2));
-                        const isFirstItemInGroup = (index % (layout.columns * 2)) === 0 && rowGroup > 0;
-
-                        return (
-                            <div
-                                key={spot.id}
-                                onMouseEnter={() => spot.status === "Boş" && setHoveredSpot(spot.id)}
-                                onMouseLeave={() => setHoveredSpot(null)}
-                                style={{
-                                    padding: "20px",
-                                    borderRadius: "5px",
-                                    backgroundColor:
-                                        spot.status === "Boş"
-                                            ? "green"
-                                            : spot.status === "Dolu"
-                                                ? "red"
-                                                : "orange",
-                                    color: "#fff",
-                                    width: "80px",
-                                    textAlign: "center",
-                                    position: "relative",
-                                    marginTop: isFirstItemInGroup ? "30px" : "0px",
-                                    transition: "margin 0.3s"
-                                }}
-                            >
-                                {spot.id} - {spot.status}
-                                {hoveredSpot === spot.id && (
-                                    <div
-                                        style={{
-                                            position: "absolute",
-                                            top: "-40px",
-                                            left: "50%",
-                                            transform: "translateX(-50%)",
-                                            backgroundColor: "#333",
-                                            color: "#fff",
-                                            padding: "5px 10px",
-                                            borderRadius: "5px",
-                                            fontSize: "12px",
-                                            whiteSpace: "nowrap",
-                                            zIndex: 10
-                                        }}
-                                    >
-                                        Rezervasyon için Parkify mobil uygulamamızı indirebilirsiniz
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
+                    {parkingSpots.map((spot) => (
+                        <div
+                            key={spot.id}
+                            onMouseEnter={() => spot.status === "Boş" && setHoveredSpot(spot.id)}
+                            onMouseLeave={() => setHoveredSpot(null)}
+                            style={{
+                                padding: "20px",
+                                borderRadius: "5px",
+                                backgroundColor:
+                                    spot.status === "Boş"
+                                        ? "green"
+                                        : spot.status === "Dolu"
+                                            ? "red"
+                                            : "orange",
+                                color: "#fff",
+                                width: "80px",
+                                textAlign: "center",
+                                position: "relative"
+                            }}
+                        >
+                            {spot.id} - {spot.status}
+                            {hoveredSpot === spot.id && (
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        top: "-40px",
+                                        left: "50%",
+                                        transform: "translateX(-50%)",
+                                        backgroundColor: "#333",
+                                        color: "#fff",
+                                        padding: "5px 10px",
+                                        borderRadius: "5px",
+                                        fontSize: "12px",
+                                        whiteSpace: "nowrap",
+                                        zIndex: 10
+                                    }}
+                                >
+                                    Rezervasyon için Parkify mobil uygulamamızı indirebilirsiniz
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

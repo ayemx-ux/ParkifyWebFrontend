@@ -7,6 +7,18 @@ function AdminPage({ setIsLoggedIn }) {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
+    const runOCR = async () => {
+        try {
+            const response = await fetch("http://localhost:8001/run-ocr", {
+                method: "POST"
+            });
+            const data = await response.json();
+            console.log(data.message);
+        } catch (error) {
+            console.error("OCR çalıştırılırken hata:", error);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -32,7 +44,9 @@ function AdminPage({ setIsLoggedIn }) {
                 localStorage.setItem("adminName", data.name);
                 localStorage.setItem("lotId", data.lot_id); // Admin adı başka yerlerde görünsün, hangi otoparkla ilişkili olduğunu hatırlayabilesin.
                 console.log("lotId:", localStorage.getItem("lotId"));
-                localStorage.setItem("adminEmail", username); // 👈 Ekle
+                localStorage.setItem("adminEmail", username);
+
+                await runOCR();
 
 
                 alert(`Hoş geldiniz, ${data.name}!`);
