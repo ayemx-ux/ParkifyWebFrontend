@@ -11,7 +11,8 @@ function ComplaintsDashboard() {
       return;
     }
 
-    fetch(`http://13.48.10.236:5181/api/Complaints/GetByLot/${lotId}`)
+
+    fetch(`http://13.51.15.3:5181/api/Complaints/GetByLot/${lotId}`)
         .then((response) => response.json())
         .then((data) => setComplaints(data))
         .catch((error) => console.error("API Hatası:", error));
@@ -35,7 +36,7 @@ function ComplaintsDashboard() {
     };
 
     //Ceza ver
-    fetch("http://13.48.10.236:5181/api/Penalties/Issue", {
+    fetch("http://13.51.15.3:5181/api/Penalties/Issue", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(penaltyRequest),
@@ -43,7 +44,7 @@ function ComplaintsDashboard() {
         .then((response) => {
           if (response.ok) {
             //Şikayeti resolved yap
-            fetch(`http://13.48.10.236:5181/api/Complaints/MarkAsResolved?complaintId=${complaintId}&adminEmail=${adminEmail}`, {
+            fetch(`http://13.51.15.3:5181/api/Complaints/MarkAsResolved?complaintId=${complaintId}&adminEmail=${adminEmail}`, {
               method: "PUT",
             })
                 .then((res) => {
@@ -87,7 +88,7 @@ function ComplaintsDashboard() {
               <div key={complaint.id} style={styles.cardContainer}>
                 <div style={styles.imageWrapper}>
                   <img
-                      src={`http://13.48.10.236:5181/${complaint.imagePath}`}
+                      src={`data:image/jpeg;base64,${complaint.imageBase64}`}
                       alt="Plaka"
                       style={styles.image}
                   />

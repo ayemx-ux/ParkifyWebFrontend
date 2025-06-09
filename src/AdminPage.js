@@ -7,23 +7,12 @@ function AdminPage({ setIsLoggedIn }) {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const runOCR = async () => {
-        try {
-            const response = await fetch("http://13.48.10.236:8001/run-ocr", {
-                method: "POST"
-            });
-            const data = await response.json();
-            console.log("OCR sonucu:", data.message);
-        } catch (error) {
-            console.error("OCR çalıştırılırken hata:", error);
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://13.48.10.236:5181/api/admin/login", {
+            const response = await fetch("http://13.51.15.3:5181/api/admin/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -46,7 +35,6 @@ function AdminPage({ setIsLoggedIn }) {
                 console.log("lotId:", localStorage.getItem("lotId"));
                 localStorage.setItem("adminEmail", username);
 
-                await runOCR();
 
                 alert(`Hoş geldiniz, ${data.name}!`);
                 setIsLoggedIn(true);
